@@ -1,25 +1,66 @@
 extensions [ nw ]
+globals [ is-first-swipe male-swipes female-swipes total-male-swipes total-female-swipes ]
 
 turtles-own [
   sex
   sex-pref
+  attractiveness
 ]
 
 to setup
   clear-all
+  set is-first-swipe 1
+  set male-swipes 0
+  set female-swipes 0
+  set total-male-swipes 0
+  set total-female-swipes 0
   set-default-shape turtles "person"
   create-users
+  set-attractiveness
   reset-ticks
+end
+
+;; set attractiveness for each user as normally distributed values
+to set-attractiveness
+  ;; mean
+  let m 50.0
+  ;; sigma
+  let s 50.0 / 3.0
+
+  ;; generate random number (mostly) in the range 0.0 to 100.0, centered at 50.0
+  ask turtles [
+    set attractiveness random-normal m s
+  ]
+
+  ;; set turtles with attractiveness below minimum to 0.0
+  ask turtles with [attractiveness < 0.0] [
+    set attractiveness 0.0
+  ]
+
+  ;; set turtles with attractiveness above maximum to 100.0
+  ask turtles with [attractiveness > 100.0] [
+    set attractiveness 100.0
+  ]
 end
 
 to go
   remove-gender-conflicts
   while [any? turtles with [count my-links > 1]] [
     swipe
+    set is-first-swipe 0
     tick
   ]
   find-happy
   find-sad
+  print "--------------"
+  print male-swipes
+  print total-male-swipes
+  print 1.0 * male-swipes / total-male-swipes
+  print "--------------"
+  print female-swipes
+  print total-female-swipes
+  print 1.0 * female-swipes / total-female-swipes
+  print "--------------"
 end
 
 to find-happy
@@ -38,7 +79,11 @@ to create-users
   ;; create a random network
   nw:generate-random turtles links 100 1 [
     setxy round random-xcor round random-ycor
-    set sex one-of [0 1]
+    ;; 1 = male, 0 = female
+    set sex 0
+    if random 100 < male-population-percentage [
+      set sex 1
+    ]
     set sex-pref one-of [0 1]
     set color ifelse-value (sex = 0) [blue] [red]
     set pcolor ifelse-value (sex-pref = 0) [blue - 2] [red - 2]
@@ -55,22 +100,69 @@ to remove-gender-conflicts
 end
 
 to swipe
-  ;; swiping will be random (50%)
+  ;; swiping will be based on closeness to attractiveness level
+
+  ;; at male-base-swipe-probability ~= 63 and female-base-swipe-probability ~= 30
+  ;; the resulting swipe percentage for both male and female matches those according to the stats
+  ;; 46%  for male, 1% for female
+
+
+  ;; variables to store attractiveness of each turtle pair
+  let a1 0.0
+  let a2 0.0
+
+
+  let base-swipe-probability 0.0
+  let s 0
   ask turtles [
-    ask my-links with [random-float 1 < 0.5] [
-     die
+    set base-swipe-probability (male-base-swipe-probability * 1.0)
+    if sex = 0 [
+      set base-swipe-probability (female-base-swipe-probability * 1.0)
+    ]
+    set s sex
+    ask my-links [
+      ask end1 [
+        set a1 attractiveness
+      ]
+
+      ask end2 [
+        set a2 attractiveness
+      ]
+
+      if is-first-swipe = 1 [
+        ifelse s = 0 [
+          set total-female-swipes total-female-swipes + 1
+        ] [
+          set total-male-swipes total-male-swipes + 1
+        ]
+      ]
+
+
+      ;; the chance of rejecting (terminating a link) is base-swipe-probability% minus the absolute difference of attractiveness
+      ;; therefore the higher the gap between the attractiveness of the pair, the lower the chance of keeping the link
+      ifelse (random-float 100.0) > (base-swipe-probability - (abs (a1 - a2)))[
+        die
+      ] [
+        if is-first-swipe = 1 [
+          ifelse s = 0 [
+            set female-swipes (female-swipes + 1)
+          ] [
+            set male-swipes (male-swipes + 1)
+          ]
+        ]
+      ]
     ]
   ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-263
-15
-952
-705
+285
+11
+642
+369
 -1
 -1
-20.64
+10.6
 1
 10
 1
@@ -125,10 +217,10 @@ NIL
 1
 
 MONITOR
-26
-108
-235
-153
+730
+240
+939
+285
 Percent of population with matches
 count (turtles with [count my-links != 0]) / count (turtles) * 100.0
 2
@@ -136,10 +228,10 @@ count (turtles with [count my-links != 0]) / count (turtles) * 100.0
 11
 
 PLOT
-981
-53
-1483
-378
+670
+10
+1024
+229
 plot 1
 ticks
 percent with matches
@@ -152,6 +244,90 @@ true
 "" ""
 PENS
 "pen-0" 1.0 0 -7500403 true "" "plot count (turtles with [count my-links != 0]) / count (turtles) * 100.0"
+
+SLIDER
+29
+145
+235
+178
+male-population-percentage
+male-population-percentage
+0
+100
+62.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+27
+215
+232
+248
+male-base-swipe-probability
+male-base-swipe-probability
+0
+100
+63.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+20
+278
+238
+311
+female-base-swipe-probability
+female-base-swipe-probability
+0
+100
+30.0
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+676
+296
+816
+341
+Male swipe percentage
+male-swipes / total-male-swipes
+17
+1
+11
+
+MONITOR
+836
+296
+990
+341
+Female swipe percentage
+female-swipes / total-female-swipes
+17
+1
+11
+
+BUTTON
+62
+90
+171
+123
+setup then go
+setup\ngo
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?

@@ -29,7 +29,10 @@ to create-users
     if random 100 < male-population-percentage [
       set sex 1
     ]
-    set sex-pref one-of [0 1] ;; to-do: create slider for this
+    set sex-pref 1 - sex
+    if random 100 < gay-population-percentage [
+      set sex-pref sex
+    ]
     set color ifelse-value (sex = 1) [blue] [red]
     set pcolor ifelse-value (sex-pref = 1) [blue - 2] [red - 2]
     ask my-links [hide-link]
@@ -251,9 +254,9 @@ PENS
 
 SLIDER
 18
-99
+118
 224
-132
+151
 male-population-percentage
 male-population-percentage
 0
@@ -266,9 +269,9 @@ HORIZONTAL
 
 SLIDER
 18
-138
+211
 223
-171
+244
 male-base-swipe-probability
 male-base-swipe-probability
 0
@@ -281,9 +284,9 @@ HORIZONTAL
 
 SLIDER
 18
-176
+249
 236
-209
+282
 female-base-swipe-probability
 female-base-swipe-probability
 0
@@ -296,9 +299,9 @@ HORIZONTAL
 
 MONITOR
 1005
-296
+364
 1145
-341
+409
 Male swipe percentage
 male-swipes / total-male-swipes
 17
@@ -307,9 +310,9 @@ male-swipes / total-male-swipes
 
 MONITOR
 1165
-296
+364
 1319
-341
+409
 Female swipe percentage
 female-swipes / total-female-swipes
 17
@@ -335,15 +338,52 @@ NIL
 
 SLIDER
 18
-60
+79
 190
-93
+112
 population
 population
 10
-300
+500
 300.0
 10
+1
+NIL
+HORIZONTAL
+
+MONITOR
+1005
+308
+1153
+353
+Straight people matched
+count (turtles with [count my-links != 0 and sex-pref != sex])
+2
+1
+11
+
+MONITOR
+1165
+308
+1291
+353
+Gay people matched
+count (turtles with [count my-links != 0 and sex-pref = sex])
+2
+1
+11
+
+SLIDER
+18
+157
+219
+190
+gay-population-percentage
+gay-population-percentage
+0
+100
+20.0
+1
 1
 NIL
 HORIZONTAL

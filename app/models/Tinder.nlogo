@@ -20,6 +20,22 @@ to setup
   reset-ticks
 end
 
+to create-users
+  ;; create a random network
+  nw:generate-random turtles links population 1 [
+    setxy round random-xcor round random-ycor
+    ;; 1 = male, 0 = female
+    set sex 0
+    if random 100 < male-population-percentage [
+      set sex 1
+    ]
+    set sex-pref one-of [0 1] ;; to-do: create slider for this
+    set color ifelse-value (sex = 1) [blue] [red]
+    set pcolor ifelse-value (sex-pref = 1) [blue - 2] [red - 2]
+    ask my-links [hide-link]
+  ]
+end
+
 ;; set attractiveness for each user as normally distributed values
 to set-attractiveness
   ;; mean
@@ -45,11 +61,14 @@ end
 
 to go
   remove-gender-conflicts
+  ;; repeat the process until every turtle is matched with either 1 or no other turtle
   while [any? turtles with [count my-links > 1]] [
     swipe
-    set is-first-swipe 0
+    set is-first-swipe 0 ;; marks the end of phase 1 (swiping)
     tick
   ]
+
+  ask turtles [ ask my-links [ show-link ] ]
   find-happy
   find-sad
   print "--------------"
@@ -61,33 +80,6 @@ to go
   print total-female-swipes
   print 1.0 * female-swipes / total-female-swipes
   print "--------------"
-end
-
-to find-happy
-  ask turtles with [count my-links = 1] [
-    set shape "face happy"
-  ]
-end
-
-to find-sad
-  ask turtles with [count my-links = 0] [
-    set shape "face sad"
-  ]
-end
-
-to create-users
-  ;; create a random network
-  nw:generate-random turtles links 100 1 [
-    setxy round random-xcor round random-ycor
-    ;; 1 = male, 0 = female
-    set sex 0
-    if random 100 < male-population-percentage [
-      set sex 1
-    ]
-    set sex-pref one-of [0 1]
-    set color ifelse-value (sex = 0) [blue] [red]
-    set pcolor ifelse-value (sex-pref = 0) [blue - 2] [red - 2]
-  ]
 end
 
 to remove-gender-conflicts
@@ -154,12 +146,24 @@ to swipe
     ]
   ]
 end
+
+to find-happy
+  ask turtles with [count my-links = 1] [
+    set shape "face happy"
+  ]
+end
+
+to find-sad
+  ask turtles with [count my-links = 0] [
+    set shape "face sad"
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 285
 11
-642
-369
+982
+709
 -1
 -1
 10.6
@@ -172,10 +176,10 @@ GRAPHICS-WINDOW
 0
 0
 1
--16
-16
--16
-16
+-32
+32
+-32
+32
 0
 0
 1
@@ -183,10 +187,10 @@ ticks
 30.0
 
 BUTTON
-36
-46
-99
-79
+18
+21
+81
+54
 NIL
 setup
 NIL
@@ -200,10 +204,10 @@ NIL
 1
 
 BUTTON
-123
-47
-186
-80
+87
+21
+150
+54
 NIL
 go
 NIL
@@ -217,20 +221,20 @@ NIL
 1
 
 MONITOR
-730
+1059
 240
-939
+1268
 285
 Percent of population with matches
-count (turtles with [count my-links != 0]) / count (turtles) * 100.0
+count (turtles with [count my-links != 0]) / population * 100.0
 2
 1
 11
 
 PLOT
-670
+999
 10
-1024
+1353
 229
 plot 1
 ticks
@@ -246,10 +250,10 @@ PENS
 "pen-0" 1.0 0 -7500403 true "" "plot count (turtles with [count my-links != 0]) / count (turtles) * 100.0"
 
 SLIDER
-29
-145
-235
-178
+18
+99
+224
+132
 male-population-percentage
 male-population-percentage
 0
@@ -261,10 +265,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-27
-215
-232
-248
+18
+138
+223
+171
 male-base-swipe-probability
 male-base-swipe-probability
 0
@@ -276,10 +280,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-20
-278
-238
-311
+18
+176
+236
+209
 female-base-swipe-probability
 female-base-swipe-probability
 0
@@ -291,9 +295,9 @@ NIL
 HORIZONTAL
 
 MONITOR
-676
+1005
 296
-816
+1145
 341
 Male swipe percentage
 male-swipes / total-male-swipes
@@ -302,9 +306,9 @@ male-swipes / total-male-swipes
 11
 
 MONITOR
-836
+1165
 296
-990
+1319
 341
 Female swipe percentage
 female-swipes / total-female-swipes
@@ -313,10 +317,10 @@ female-swipes / total-female-swipes
 11
 
 BUTTON
-62
-90
-171
-123
+156
+21
+265
+54
 setup then go
 setup\ngo
 NIL
@@ -328,6 +332,21 @@ NIL
 NIL
 NIL
 1
+
+SLIDER
+18
+60
+190
+93
+population
+population
+10
+300
+300.0
+10
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?

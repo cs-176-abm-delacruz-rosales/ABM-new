@@ -110,10 +110,20 @@ to swipe
   let base-swipe-probability 0.0
   let s 0
   ask turtles [
-    set base-swipe-probability (male-base-swipe-probability * 1.0)
-    if sex = 0 [
-      set base-swipe-probability (female-base-swipe-probability * 1.0)
+    ;; set the base probability based on gender and preference
+    ifelse sex-pref != sex [
+      set base-swipe-probability (male-base-swipe-probability * 1.0)
+
+      if sex = 0 [
+        set base-swipe-probability (female-base-swipe-probability * 1.0)
+      ]
+    ] [
+      set base-swipe-probability (gay-base-swipe-probability * 1.0)
+      if sex = 0 [
+        set base-swipe-probability (lesb-base-swipe-probability * 1.0)
+      ]
     ]
+
     set s sex
     ask my-links [
       ask end1 [
@@ -382,7 +392,37 @@ gay-population-percentage
 gay-population-percentage
 0
 100
-20.0
+40.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+17
+298
+264
+331
+gay-base-swipe-probability
+gay-base-swipe-probability
+0
+100
+84.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+17
+337
+268
+370
+lesb-base-swipe-probability
+lesb-base-swipe-probability
+0
+100
+81.0
 1
 1
 NIL

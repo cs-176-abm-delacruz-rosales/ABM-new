@@ -25,13 +25,21 @@ to create-users
   nw:generate-random turtles links population 1 [
     setxy round random-xcor round random-ycor
     ;; 1 = male, 0 = female
-    set sex 0
-    if random 100 < male-population-percentage [
+
+    ifelse random 100 < male-population-percentage [
+      ;; set males
       set sex 1
-    ]
-    set sex-pref 1 - sex
-    if random 100 < gay-population-percentage [
-      set sex-pref sex
+      set sex-pref 0 ;; set heteros
+      if random 10000 < (male-population-percentage * gay-population-percentage) [
+        set sex-pref sex
+      ]
+    ] [
+      ;; set females
+      set sex 0
+      set sex-pref 1 ;; set heteros
+      if random 10000 < ((100 - male-population-percentage) * lesb-population-percentage) [
+        set sex-pref sex
+      ]
     ]
     set color ifelse-value (sex = 1) [blue] [red]
     set pcolor ifelse-value (sex-pref = 1) [blue - 2] [red - 2]
@@ -271,7 +279,7 @@ male-population-percentage
 male-population-percentage
 0
 100
-62.0
+61.0
 1
 1
 NIL
@@ -279,9 +287,9 @@ HORIZONTAL
 
 SLIDER
 18
-211
+264
 223
-244
+297
 male-base-swipe-probability
 male-base-swipe-probability
 0
@@ -294,9 +302,9 @@ HORIZONTAL
 
 SLIDER
 18
-249
+302
 236
-282
+335
 female-base-swipe-probability
 female-base-swipe-probability
 0
@@ -309,9 +317,9 @@ HORIZONTAL
 
 MONITOR
 1005
-364
+510
 1145
-409
+555
 Male swipe percentage
 male-swipes / total-male-swipes
 17
@@ -320,9 +328,9 @@ male-swipes / total-male-swipes
 
 MONITOR
 1165
-364
+510
 1319
-409
+555
 Female swipe percentage
 female-swipes / total-female-swipes
 17
@@ -355,7 +363,7 @@ population
 population
 10
 500
-300.0
+500.0
 10
 1
 NIL
@@ -363,9 +371,9 @@ HORIZONTAL
 
 MONITOR
 1005
-308
+454
 1153
-353
+499
 Straight people matched
 count (turtles with [count my-links != 0 and sex-pref != sex])
 2
@@ -374,9 +382,9 @@ count (turtles with [count my-links != 0 and sex-pref != sex])
 
 MONITOR
 1165
-308
+454
 1291
-353
+499
 Gay people matched
 count (turtles with [count my-links != 0 and sex-pref = sex])
 2
@@ -385,14 +393,14 @@ count (turtles with [count my-links != 0 and sex-pref = sex])
 
 SLIDER
 18
-157
+170
 219
-190
+203
 gay-population-percentage
 gay-population-percentage
 0
 100
-40.0
+20.0
 1
 1
 NIL
@@ -400,9 +408,9 @@ HORIZONTAL
 
 SLIDER
 17
-298
+357
 264
-331
+390
 gay-base-swipe-probability
 gay-base-swipe-probability
 0
@@ -415,9 +423,9 @@ HORIZONTAL
 
 SLIDER
 17
-337
+396
 268
-370
+429
 lesb-base-swipe-probability
 lesb-base-swipe-probability
 0
@@ -427,6 +435,87 @@ lesb-base-swipe-probability
 1
 NIL
 HORIZONTAL
+
+SLIDER
+18
+208
+275
+241
+lesb-population-percentage
+lesb-population-percentage
+0
+100
+40.0
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+1169
+300
+1238
+345
+Females
+count (turtles with [sex = 0])
+17
+1
+11
+
+MONITOR
+1006
+301
+1063
+346
+Males
+count (turtles with [sex = 1])
+17
+1
+11
+
+MONITOR
+1005
+401
+1062
+446
+Gays
+count (turtles with [sex = 1 and sex-pref = 1])
+17
+1
+11
+
+MONITOR
+1169
+402
+1241
+447
+Lesbians
+count (turtles with [sex = 0 and sex-pref = 0])
+17
+1
+11
+
+MONITOR
+1006
+353
+1114
+398
+Straight Males
+count (turtles with [sex = 1 and sex-pref = 0])
+17
+1
+11
+
+MONITOR
+1169
+354
+1294
+399
+Straight Females
+count (turtles with [sex = 0 and sex-pref = 1])
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

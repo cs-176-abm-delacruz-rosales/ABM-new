@@ -1,5 +1,5 @@
 extensions [ nw ]
-globals [ is-first-swipe male-swipes female-swipes total-male-swipes total-female-swipes ]
+globals [ is-first-swipe male-swipes female-swipes total-male-swipes total-female-swipes male-swipe-rate female-swipe-rate end-of-rep]
 
 turtles-own [
   sex
@@ -12,6 +12,7 @@ turtles-own [
 
 to setup
   clear-all
+  set end-of-rep false
   set is-first-swipe 1
   set male-swipes 0
   set female-swipes 0
@@ -87,6 +88,8 @@ to go
     ask my-links [ show-link ]
     set success-rate ifelse-value (views = 0) [0] [views-success / views]
   ]
+  set male-swipe-rate male-swipes / total-male-swipes
+  set female-swipe-rate female-swipes / total-female-swipes
   find-happy
   find-sad
   print "--------------"
@@ -98,6 +101,7 @@ to go
   print total-female-swipes
   print 1.0 * female-swipes / total-female-swipes
   print "--------------"
+  set end-of-rep true
 end
 
 to remove-gender-conflicts
@@ -311,7 +315,7 @@ male-base-swipe-probability
 male-base-swipe-probability
 0
 100
-69.0
+63.0
 1
 1
 NIL
@@ -432,7 +436,7 @@ gay-base-swipe-probability
 gay-base-swipe-probability
 0
 100
-31.0
+50.0
 1
 1
 NIL
@@ -924,6 +928,74 @@ NetLogo 6.0.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="Repetition" repetitions="10" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <exitCondition>end-of-rep</exitCondition>
+    <metric>count (turtles with [count my-links != 0]) / population * 100.0</metric>
+    <metric>male-swipe-rate</metric>
+    <metric>female-swipe-rate</metric>
+    <metric>mean [success-rate] of turtles with [sex = 1 and sex-pref = 0]</metric>
+    <metric>mean [success-rate] of turtles with [sex = 0 and sex-pref = 1]</metric>
+    <metric>mean [success-rate] of turtles with [sex = 1 and sex-pref = 1]</metric>
+    <enumeratedValueSet variable="gay-base-swipe-probability">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="lesb-base-swipe-probability">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="female-base-swipe-probability">
+      <value value="30"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="male-base-swipe-probability">
+      <value value="63"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="lesb-population-percentage">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="male-population-percentage">
+      <value value="62"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gay-population-percentage">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="population">
+      <value value="300"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Repetition: Female Success Rate" repetitions="5" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <exitCondition>end-of-rep</exitCondition>
+    <metric>count (turtles with [count my-links != 0]) / population * 100.0</metric>
+    <metric>male-swipe-rate</metric>
+    <metric>female-swipe-rate</metric>
+    <metric>mean [success-rate] of turtles with [sex = 1 and sex-pref = 0]</metric>
+    <metric>mean [success-rate] of turtles with [sex = 0 and sex-pref = 1]</metric>
+    <metric>mean [success-rate] of turtles with [sex = 1 and sex-pref = 1]</metric>
+    <steppedValueSet variable="gay-base-swipe-probability" first="40" step="1" last="50"/>
+    <enumeratedValueSet variable="lesb-base-swipe-probability">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="female-base-swipe-probability">
+      <value value="30"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="male-base-swipe-probability" first="63" step="1" last="69"/>
+    <enumeratedValueSet variable="lesb-population-percentage">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="male-population-percentage">
+      <value value="62"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gay-population-percentage">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="population">
+      <value value="300"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default

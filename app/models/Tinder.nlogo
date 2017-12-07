@@ -204,8 +204,8 @@ end
 GRAPHICS-WINDOW
 285
 11
-982
-709
+920
+647
 -1
 -1
 9.65
@@ -330,7 +330,7 @@ female-base-swipe-probability
 female-base-swipe-probability
 0
 100
-30.0
+33.0
 1
 1
 NIL
@@ -436,7 +436,7 @@ gay-base-swipe-probability
 gay-base-swipe-probability
 0
 100
-50.0
+55.0
 1
 1
 NIL
@@ -964,7 +964,7 @@ NetLogo 6.0.1
       <value value="300"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="Repetition: Female Success Rate" repetitions="5" runMetricsEveryStep="false">
+  <experiment name="FemSuccRate" repetitions="10" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <exitCondition>end-of-rep</exitCondition>
@@ -982,6 +982,68 @@ NetLogo 6.0.1
       <value value="30"/>
     </enumeratedValueSet>
     <steppedValueSet variable="male-base-swipe-probability" first="63" step="1" last="69"/>
+    <enumeratedValueSet variable="lesb-population-percentage">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="male-population-percentage">
+      <value value="62"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gay-population-percentage">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="population">
+      <value value="300"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="GaySuccRate" repetitions="10" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <exitCondition>end-of-rep</exitCondition>
+    <metric>count (turtles with [count my-links != 0]) / population * 100.0</metric>
+    <metric>male-swipe-rate</metric>
+    <metric>female-swipe-rate</metric>
+    <metric>mean [success-rate] of turtles with [sex = 1 and sex-pref = 0]</metric>
+    <metric>mean [success-rate] of turtles with [sex = 0 and sex-pref = 1]</metric>
+    <metric>mean [success-rate] of turtles with [sex = 1 and sex-pref = 1]</metric>
+    <steppedValueSet variable="gay-base-swipe-probability" first="45" step="1" last="55"/>
+    <enumeratedValueSet variable="lesb-base-swipe-probability">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="female-base-swipe-probability">
+      <value value="30"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="male-base-swipe-probability" first="60" step="1" last="66"/>
+    <enumeratedValueSet variable="lesb-population-percentage">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="male-population-percentage">
+      <value value="62"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="gay-population-percentage">
+      <value value="20"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="population">
+      <value value="300"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="ManSuccRate" repetitions="10" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <exitCondition>end-of-rep</exitCondition>
+    <metric>count (turtles with [count my-links != 0]) / population * 100.0</metric>
+    <metric>male-swipe-rate</metric>
+    <metric>female-swipe-rate</metric>
+    <metric>mean [success-rate] of turtles with [sex = 1 and sex-pref = 0]</metric>
+    <metric>mean [success-rate] of turtles with [sex = 0 and sex-pref = 1]</metric>
+    <metric>mean [success-rate] of turtles with [sex = 1 and sex-pref = 1]</metric>
+    <steppedValueSet variable="gay-base-swipe-probability" first="45" step="1" last="55"/>
+    <enumeratedValueSet variable="lesb-base-swipe-probability">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="female-base-swipe-probability" first="27" step="1" last="33"/>
+    <enumeratedValueSet variable="male-base-swipe-probability">
+      <value value="63"/>
+    </enumeratedValueSet>
     <enumeratedValueSet variable="lesb-population-percentage">
       <value value="20"/>
     </enumeratedValueSet>

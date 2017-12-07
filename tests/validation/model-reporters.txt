@@ -1,0 +1,26 @@
+Percent w/ matches (1.2):
+count (turtles with [count my-links != 0]) / population * 100.0
+
+Heteromatches:
+count (turtles with [count my-links != 0 and sex-pref != sex])
+
+Homomatches:
+count (turtles with [count my-links != 0 and sex-pref = sex])
+
+Male swipe percentage (46%):
+male-swipes / total-male-swipes
+
+Female swipe percentage (14%):
+female-swipes / total-female-swipes
+
+Heteromale success rate (16%):
+mean [success-rate] of turtles with [sex = 1 and sex-pref = 0]
+
+Heterofemale success rate (52%):
+mean [success-rate] of turtles with [sex = 0 and sex-pref = 1]
+
+Homomale success rate (35%):
+mean [success-rate] of turtles with [sex = 1 and sex-pref = 1]
+
+Homofemale success rate:
+mean [success-rate] of turtles with [sex = 0 and sex-pref = 0]

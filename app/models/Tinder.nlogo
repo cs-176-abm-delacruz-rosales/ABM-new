@@ -5,6 +5,9 @@ turtles-own [
   sex
   sex-pref
   attractiveness
+  views
+  views-success
+  success-rate
 ]
 
 to setup
@@ -79,7 +82,11 @@ to go
     tick
   ]
 
-  ask turtles [ ask my-links [ show-link ] ]
+  ;; post processing
+  ask turtles [
+    ask my-links [ show-link ]
+    set success-rate ifelse-value (views = 0) [0] [views-success / views]
+  ]
   find-happy
   find-sad
   print "--------------"
@@ -132,7 +139,10 @@ to swipe
       ]
     ]
 
+    ;; set the sex
     set s sex
+
+    ;; for each of the (potential) matches the node has
     ask my-links [
       ask end1 [
         set a1 attractiveness
@@ -142,11 +152,15 @@ to swipe
         set a2 attractiveness
       ]
 
+      ;; update total swipes if ever
       if is-first-swipe = 1 [
         ifelse s = 0 [
           set total-female-swipes total-female-swipes + 1
         ] [
           set total-male-swipes total-male-swipes + 1
+        ]
+        ask other-end [
+          set views views + 1
         ]
       ]
 
@@ -161,6 +175,9 @@ to swipe
             set female-swipes (female-swipes + 1)
           ] [
             set male-swipes (male-swipes + 1)
+          ]
+          ask other-end [
+            set views-success views-success + 1
           ]
         ]
       ]
@@ -187,7 +204,7 @@ GRAPHICS-WINDOW
 709
 -1
 -1
-10.6
+9.65
 1
 10
 1
@@ -294,7 +311,7 @@ male-base-swipe-probability
 male-base-swipe-probability
 0
 100
-63.0
+69.0
 1
 1
 NIL
@@ -317,9 +334,9 @@ HORIZONTAL
 
 MONITOR
 1005
-562
+522
 1145
-607
+567
 Male swipe percentage
 male-swipes / total-male-swipes
 17
@@ -327,10 +344,10 @@ male-swipes / total-male-swipes
 11
 
 MONITOR
-1165
-562
-1319
-607
+1188
+522
+1342
+567
 Female swipe percentage
 female-swipes / total-female-swipes
 17
@@ -371,9 +388,9 @@ HORIZONTAL
 
 MONITOR
 1005
-506
+459
 1153
-551
+504
 Straight people matched
 count (turtles with [count my-links != 0 and sex-pref != sex])
 2
@@ -381,10 +398,10 @@ count (turtles with [count my-links != 0 and sex-pref != sex])
 11
 
 MONITOR
-1165
-506
-1291
-551
+1188
+459
+1314
+504
 Gay people matched
 count (turtles with [count my-links != 0 and sex-pref = sex])
 2
@@ -415,7 +432,7 @@ gay-base-swipe-probability
 gay-base-swipe-probability
 0
 100
-30.0
+31.0
 1
 1
 NIL
@@ -430,7 +447,7 @@ lesb-base-swipe-probability
 lesb-base-swipe-probability
 0
 100
-63.0
+50.0
 1
 1
 NIL
@@ -452,9 +469,9 @@ NIL
 HORIZONTAL
 
 MONITOR
-1169
+1192
 300
-1238
+1261
 345
 Females
 count (turtles with [sex = 0])
@@ -475,9 +492,9 @@ count (turtles with [sex = 1])
 
 MONITOR
 1005
-424
+397
 1062
-469
+442
 Gays
 count (turtles with [sex = 1 and sex-pref = 1])
 17
@@ -485,10 +502,10 @@ count (turtles with [sex = 1 and sex-pref = 1])
 11
 
 MONITOR
-1169
-425
-1241
-470
+1192
+398
+1264
+443
 Lesbians
 count (turtles with [sex = 0 and sex-pref = 0])
 17
@@ -497,9 +514,9 @@ count (turtles with [sex = 0 and sex-pref = 0])
 
 MONITOR
 1006
-376
+349
 1114
-421
+394
 Straight Males
 count (turtles with [sex = 1 and sex-pref = 0])
 17
@@ -507,13 +524,57 @@ count (turtles with [sex = 1 and sex-pref = 0])
 11
 
 MONITOR
-1169
-377
-1294
-422
+1192
+350
+1317
+395
 Straight Females
 count (turtles with [sex = 0 and sex-pref = 1])
 17
+1
+11
+
+MONITOR
+1005
+583
+1163
+628
+Heteromale success rate
+mean [success-rate] of turtles with [sex = 1 and sex-pref = 0]
+4
+1
+11
+
+MONITOR
+1188
+582
+1349
+627
+Heterofemale success rate
+mean [success-rate] of turtles with [sex = 0 and sex-pref = 1]
+4
+1
+11
+
+MONITOR
+1006
+632
+1114
+677
+Gay success rate
+mean [success-rate] of turtles with [sex = 1 and sex-pref = 1]
+4
+1
+11
+
+MONITOR
+1188
+633
+1315
+678
+Lesbian success rate
+mean [success-rate] of turtles with [sex = 0 and sex-pref = 0]
+4
 1
 11
 
